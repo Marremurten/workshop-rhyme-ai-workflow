@@ -1,13 +1,16 @@
-import { useState, useRef, useEffect, type KeyboardEvent } from 'react';
+import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 
 interface CreateTaskFormProps {
   column: string;
   onSubmit: (data: { title: string; column: string }) => void;
 }
 
-export default function CreateTaskForm({ column, onSubmit }: CreateTaskFormProps) {
+export default function CreateTaskForm({
+  column,
+  onSubmit,
+}: CreateTaskFormProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -17,16 +20,16 @@ export default function CreateTaskForm({ column, onSubmit }: CreateTaskFormProps
   }, [isOpen]);
 
   function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       if (title.trim()) {
         onSubmit({ title: title.trim(), column });
-        setTitle('');
+        setTitle("");
         setIsOpen(false);
       }
-    } else if (e.key === 'Escape') {
+    } else if (e.key === "Escape") {
       setIsOpen(false);
-      setTitle('');
+      setTitle("");
     }
   }
 

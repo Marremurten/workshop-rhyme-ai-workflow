@@ -1,21 +1,24 @@
-import { useState, type FormEvent } from 'react';
-import FormField, { inputClassName } from './ui/FormField';
-import Button from './ui/Button';
+import { useState, type FormEvent } from "react";
+import FormField, { inputClassName } from "./ui/FormField";
+import Button from "./ui/Button";
 
 interface RegisterFormProps {
   onRegister: (email: string, name: string, password: string) => Promise<void>;
   onSwitchToLogin: () => void;
 }
 
-export default function RegisterForm({ onRegister, onSwitchToLogin }: RegisterFormProps) {
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+export default function RegisterForm({
+  onRegister,
+  onSwitchToLogin,
+}: RegisterFormProps) {
+  const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
-    setError('');
+    setError("");
     try {
       await onRegister(email, name, password);
     } catch (err) {

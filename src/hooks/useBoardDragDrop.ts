@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from "react";
 import {
   pointerWithin,
   rectIntersection,
@@ -6,10 +6,15 @@ import {
   KeyboardSensor,
   useSensor,
   useSensors,
-} from '@dnd-kit/core';
-import type { DragStartEvent, DragOverEvent, DragEndEvent, CollisionDetection } from '@dnd-kit/core';
-import type { Task, ColumnId } from '../types';
-import { COLUMNS } from '../constants';
+} from "@dnd-kit/core";
+import type {
+  DragStartEvent,
+  DragOverEvent,
+  DragEndEvent,
+  CollisionDetection,
+} from "@dnd-kit/core";
+import type { Task, ColumnId } from "../types";
+import { COLUMNS } from "../constants";
 
 interface UseBoardDragDropArgs {
   tasks: Record<number, Task>;
@@ -19,13 +24,26 @@ interface UseBoardDragDropArgs {
   moveTask: (id: number, column: ColumnId, index: number) => void;
 }
 
-export function useBoardDragDrop({ tasks, columns, setTasks, setColumns, moveTask }: UseBoardDragDropArgs) {
+export function useBoardDragDrop({
+  tasks,
+  columns,
+  setTasks,
+  setColumns,
+  moveTask,
+}: UseBoardDragDropArgs) {
   const [activeId, setActiveId] = useState<number | null>(null);
-  const dragStartSnapshot = useRef<{ tasks: Record<number, Task>; columns: Record<ColumnId, number[]> } | null>(null);
+  const dragStartSnapshot = useRef<{
+    tasks: Record<number, Task>;
+    columns: Record<ColumnId, number[]>;
+  } | null>(null);
   const columnsRef = useRef(columns);
-  columnsRef.current = columns;
+  useEffect(() => {
+    columnsRef.current = columns;
+  }, [columns]);
 
-  const pointerSensor = useSensor(PointerSensor, { activationConstraint: { distance: 8 } });
+  const pointerSensor = useSensor(PointerSensor, {
+    activationConstraint: { distance: 8 },
+  });
   const keyboardSensor = useSensor(KeyboardSensor);
   const sensors = useSensors(pointerSensor, keyboardSensor);
 
@@ -37,7 +55,10 @@ export function useBoardDragDrop({ tasks, columns, setTasks, setColumns, moveTas
 
   function handleDragStart(event: DragStartEvent) {
     setActiveId(event.active.id as number);
-    dragStartSnapshot.current = { tasks: { ...tasks }, columns: { ...columns } };
+    dragStartSnapshot.current = {
+      tasks: { ...tasks },
+      columns: { ...columns },
+    };
   }
 
   function handleDragOver(event: DragOverEvent) {
@@ -50,18 +71,24 @@ export function useBoardDragDrop({ tasks, columns, setTasks, setColumns, moveTas
     setColumns((prev) => {
       let activeCol: ColumnId | undefined;
       for (const col of COLUMNS) {
-        if (prev[col.id].includes(activeTaskId)) { activeCol = col.id; break; }
+        if (prev[col.id].includes(activeTaskId)) {
+          activeCol = col.id;
+          break;
+        }
       }
       if (!activeCol) return prev;
 
       let targetCol: ColumnId;
-      if (overStr.startsWith('column-')) {
-        targetCol = overStr.replace('column-', '') as ColumnId;
+      if (overStr.startsWith("column-")) {
+        targetCol = overStr.replace("column-", "") as ColumnId;
       } else {
         const overId = over.id as number;
         let found: ColumnId | undefined;
         for (const col of COLUMNS) {
-          if (prev[col.id].includes(overId)) { found = col.id; break; }
+          if (prev[col.id].includes(overId)) {
+            found = col.id;
+            break;
+          }
         }
         if (!found) return prev;
         targetCol = found;
@@ -71,19 +98,24 @@ export function useBoardDragDrop({ tasks, columns, setTasks, setColumns, moveTas
 
       if (activeCol !== targetCol) {
         next[activeCol] = next[activeCol].filter((id) => id !== activeTaskId);
-        if (overStr.startsWith('column-')) {
+        if (overStr.startsWith("column-")) {
           next[targetCol] = [...next[targetCol], activeTaskId];
         } else {
           const overIndex = next[targetCol].indexOf(over.id as number);
           const newCol = [...next[targetCol]];
-          newCol.splice(overIndex >= 0 ? overIndex + 1 : newCol.length, 0, activeTaskId);
+          newCol.splice(
+            overIndex >= 0 ? overIndex + 1 : newCol.length,
+            0,
+            activeTaskId,
+          );
           next[targetCol] = newCol;
         }
       } else {
-        if (overStr.startsWith('column-')) return prev;
+        if (overStr.startsWith("column-")) return prev;
         const oldIndex = next[targetCol].indexOf(activeTaskId);
         const newIndex = next[targetCol].indexOf(over.id as number);
-        if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex) return prev;
+        if (oldIndex === -1 || newIndex === -1 || oldIndex === newIndex)
+          return prev;
         const arr = [...next[targetCol]];
         arr.splice(oldIndex, 1);
         arr.splice(newIndex, 0, activeTaskId);
@@ -109,7 +141,11 @@ export function useBoardDragDrop({ tasks, columns, setTasks, setColumns, moveTas
     let finalIndex = -1;
     for (const col of COLUMNS) {
       const idx = cur[col.id].indexOf(activeTaskId);
-      if (idx !== -1) { finalColumn = col.id; finalIndex = idx; break; }
+      if (idx !== -1) {
+        finalColumn = col.id;
+        finalIndex = idx;
+        break;
+      }
     }
 
     if (!finalColumn || finalIndex === -1) {
@@ -119,7 +155,7 @@ export function useBoardDragDrop({ tasks, columns, setTasks, setColumns, moveTas
     }
 
     const origColumn = Object.keys(snapshot.columns).find((col) =>
-      snapshot.columns[col as ColumnId].includes(activeTaskId)
+      snapshot.columns[col as ColumnId].includes(activeTaskId),
     ) as ColumnId | undefined;
     if (origColumn === finalColumn) {
       const origIndex = snapshot.columns[finalColumn].indexOf(activeTaskId);

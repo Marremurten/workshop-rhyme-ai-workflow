@@ -1,7 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import * as api from '../api/client';
-import type { Task, ColumnId } from '../types';
-import { COLUMN_IDS } from '../constants';
+import { useState, useEffect, useCallback } from "react";
+import * as api from "../api/client";
+import type { Task, ColumnId } from "../types";
+import { COLUMN_IDS } from "../constants";
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Record<number, Task>>({});
@@ -19,7 +19,12 @@ export function useTasks() {
       const data = await api.fetchTasks();
       const taskList = (data as { tasks: Task[] }).tasks;
       const taskMap: Record<number, Task> = {};
-      const colMap: Record<ColumnId, number[]> = { todo: [], in_progress: [], review: [], done: [] };
+      const colMap: Record<ColumnId, number[]> = {
+        todo: [],
+        in_progress: [],
+        review: [],
+        done: [],
+      };
 
       for (const task of taskList) {
         taskMap[task.id] = task;
@@ -50,79 +55,101 @@ export function useTasks() {
     }));
   }, []);
 
-  const updateTask = useCallback(async (id: number, data: Record<string, unknown>) => {
-    const result = await api.updateTask(id, data);
-    const task = (result as { task: Task }).task;
-    setTasks((prev) => {
-      const oldTask = prev[id];
-      if (oldTask && oldTask.column !== task.column) {
-        setColumns((prevCols) => {
-          const next = { ...prevCols };
-          next[oldTask.column] = next[oldTask.column].filter((tid) => tid !== id);
-          next[task.column] = [...next[task.column], task.id];
-          return next;
-        });
+  const updateTask = useCallback(
+    async (id: number, data: Record<string, unknown>) => {
+      const result = await api.updateTask(id, data);
+      const task = (result as { task: Task }).task;
+      setTasks((prev) => {
+        const oldTask = prev[id];
+        if (oldTask && oldTask.column !== task.column) {
+          setColumns((prevCols) => {
+            const next = { ...prevCols };
+            next[oldTask.column] = next[oldTask.column].filter(
+              (tid) => tid !== id,
+            );
+            next[task.column] = [...next[task.column], task.id];
+            return next;
+          });
+        }
+        return { ...prev, [task.id]: task };
+      });
+    },
+    [],
+  );
+
+  const removeTask = useCallback(
+    async (id: number) => {
+      const task = tasks[id];
+      await api.deleteTask(id);
+      setTasks((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
+      if (task) {
+        setColumns((prev) => ({
+          ...prev,
+          [task.column]: prev[task.column].filter((tid) => tid !== id),
+        }));
       }
-      return { ...prev, [task.id]: task };
-    });
-  }, []);
+    },
+    [tasks],
+  );
 
-  const removeTask = useCallback(async (id: number) => {
-    const task = tasks[id];
-    await api.deleteTask(id);
-    setTasks((prev) => {
-      const next = { ...prev };
-      delete next[id];
-      return next;
-    });
-    if (task) {
-      setColumns((prev) => ({
+  const moveTask = useCallback(
+    async (id: number, column: ColumnId, index: number) => {
+      // Optimistic update
+      const prevTasks = tasks;
+      const prevColumns = columns;
+      const task = tasks[id];
+      if (!task) return;
+
+      const oldColumn = task.column;
+
+      setTasks((prev) => ({
         ...prev,
-        [task.column]: prev[task.column].filter((tid) => tid !== id),
+        [id]: { ...prev[id], column },
       }));
-    }
-  }, [tasks]);
 
-  const moveTask = useCallback(async (id: number, column: ColumnId, index: number) => {
-    // Optimistic update
-    const prevTasks = tasks;
-    const prevColumns = columns;
-    const task = tasks[id];
-    if (!task) return;
+      setColumns((prev) => {
+        const next = { ...prev };
+        // Remove from old column
+        next[oldColumn] = next[oldColumn].filter((tid) => tid !== id);
+        // Insert into new column at index
+        const newCol = [...next[column]];
+        newCol.splice(index, 0, id);
+        next[column] = newCol;
+        return next;
+      });
 
-    const oldColumn = task.column;
-
-    setTasks((prev) => ({
-      ...prev,
-      [id]: { ...prev[id], column },
-    }));
-
-    setColumns((prev) => {
-      const next = { ...prev };
-      // Remove from old column
-      next[oldColumn] = next[oldColumn].filter((tid) => tid !== id);
-      // Insert into new column at index
-      const newCol = [...next[column]];
-      newCol.splice(index, 0, id);
-      next[column] = newCol;
-      return next;
-    });
-
-    try {
-      await api.moveTask(id, column, index);
-    } catch {
-      // Revert on failure
-      setTasks(prevTasks);
-      setColumns(prevColumns);
-      await fetchTasks();
-    }
-  }, [tasks, columns, fetchTasks]);
+      try {
+        await api.moveTask(id, column, index);
+      } catch {
+        // Revert on failure
+        setTasks(prevTasks);
+        setColumns(prevColumns);
+        await fetchTasks();
+      }
+    },
+    [tasks, columns, fetchTasks],
+  );
 
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
 
-  return { tasks, columns, setTasks, setColumns, loading, fetchTasks, addTask, updateTask, removeTask, moveTask };
+  return {
+    tasks,
+    columns,
+    setTasks,
+    setColumns,
+    loading,
+    fetchTasks,
+    addTask,
+    updateTask,
+    removeTask,
+    moveTask,
+  };
 }
 
 export default useTasks;

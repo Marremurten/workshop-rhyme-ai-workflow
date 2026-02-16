@@ -1,6 +1,13 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
-import * as api from '../api/client';
-import type { User } from '../types';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from "react";
+import * as api from "../api/client";
+import type { User } from "../types";
 
 interface AuthContextValue {
   user: User | null;
@@ -40,10 +47,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUser(null);
   }, []);
 
-  const register = useCallback(async (email: string, name: string, password: string) => {
-    const data = await api.register(email, name, password);
-    setUser((data as { user: User }).user);
-  }, []);
+  const register = useCallback(
+    async (email: string, name: string, password: string) => {
+      const data = await api.register(email, name, password);
+      setUser((data as { user: User }).user);
+    },
+    [],
+  );
 
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, register }}>
@@ -55,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

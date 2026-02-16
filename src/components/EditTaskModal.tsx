@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import type { Task, ColumnId } from '../types';
-import { COLUMNS } from '../constants';
-import Modal from './ui/Modal';
-import FormField, { inputClassName } from './ui/FormField';
-import Button from './ui/Button';
+import { useState } from "react";
+import type { Task, ColumnId } from "../types";
+import { COLUMNS } from "../constants";
+import Modal from "./ui/Modal";
+import FormField, { inputClassName } from "./ui/FormField";
+import Button from "./ui/Button";
 
 interface EditTaskModalProps {
   task: Task;
@@ -13,11 +13,17 @@ interface EditTaskModalProps {
   onClose: () => void;
 }
 
-export default function EditTaskModal({ task, users, onSave, onDelete, onClose }: EditTaskModalProps) {
+export default function EditTaskModal({
+  task,
+  users,
+  onSave,
+  onDelete,
+  onClose,
+}: EditTaskModalProps) {
   const [title, setTitle] = useState(task.title);
-  const [description, setDescription] = useState(task.description ?? '');
+  const [description, setDescription] = useState(task.description ?? "");
   const [assigneeId, setAssigneeId] = useState<string>(
-    task.assignee_id != null ? String(task.assignee_id) : ''
+    task.assignee_id != null ? String(task.assignee_id) : "",
   );
   const [column, setColumn] = useState(task.column);
   const [confirmingDelete, setConfirmingDelete] = useState(false);

@@ -1,10 +1,10 @@
-import express from 'express';
-import cookieParser from 'cookie-parser';
-import type Database from 'better-sqlite3';
-import { errorHandler } from './middleware/error';
-import { createAuthRouter } from './routes/auth';
-import { createUsersRouter } from './routes/users';
-import { createTasksRouter } from './routes/tasks';
+import express from "express";
+import cookieParser from "cookie-parser";
+import type Database from "better-sqlite3";
+import { errorHandler } from "./middleware/error";
+import { createAuthRouter } from "./routes/auth";
+import { createUsersRouter } from "./routes/users";
+import { createTasksRouter } from "./routes/tasks";
 
 export function createApp(db: Database.Database): express.Express {
   const app = express();
@@ -13,12 +13,12 @@ export function createApp(db: Database.Database): express.Express {
   app.use(express.json());
 
   // Make db available on the app for routes to use
-  app.set('db', db);
+  app.set("db", db);
 
   // Register API routes
-  app.use('/api/auth', createAuthRouter(db));
-  app.use('/api/users', createUsersRouter(db));
-  app.use('/api/tasks', createTasksRouter(db));
+  app.use("/api/auth", createAuthRouter(db));
+  app.use("/api/users", createUsersRouter(db));
+  app.use("/api/tasks", createTasksRouter(db));
 
   // Eagerly register error handler for JSON parse errors etc.
   // Express only invokes 4-param handlers when next(err) is called,
@@ -34,7 +34,7 @@ export function createApp(db: Database.Database): express.Express {
 
       // 404 catch-all (appended after all routes)
       app.use((_req: express.Request, res: express.Response) => {
-        res.status(404).json({ error: 'Not found' });
+        res.status(404).json({ error: "Not found" });
       });
 
       // Also add error handler at the very end for errors from routes

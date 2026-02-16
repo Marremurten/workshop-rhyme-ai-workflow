@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react';
-import { DndContext, DragOverlay } from '@dnd-kit/core';
-import type { Task, User } from '../types';
-import { COLUMNS } from '../constants';
-import useTasks from '../hooks/useTasks';
-import { useBoardDragDrop } from '../hooks/useBoardDragDrop';
-import { useToast } from '../hooks/useToast';
-import * as api from '../api/client';
-import Column from './Column';
-import BoardHeader from './BoardHeader';
-import EditTaskModal from './EditTaskModal';
-import TaskCard from './TaskCard';
-import Toast from './Toast';
+import { useState, useEffect } from "react";
+import { DndContext, DragOverlay } from "@dnd-kit/core";
+import type { Task, User } from "../types";
+import { COLUMNS } from "../constants";
+import useTasks from "../hooks/useTasks";
+import { useBoardDragDrop } from "../hooks/useBoardDragDrop";
+import { useToast } from "../hooks/useToast";
+import * as api from "../api/client";
+import Column from "./Column";
+import BoardHeader from "./BoardHeader";
+import EditTaskModal from "./EditTaskModal";
+import TaskCard from "./TaskCard";
+import Toast from "./Toast";
 
 interface BoardProps {
   userName: string;
@@ -55,9 +55,9 @@ export default function Board({ userName, onLogout }: BoardProps) {
   async function handleAddTask(data: { title: string; column: string }) {
     try {
       await addTask(data);
-      showToast('Task created', 'success');
+      showToast("Task created", "success");
     } catch {
-      showToast('Failed to create task', 'error');
+      showToast("Failed to create task", "error");
     }
   }
 
@@ -65,9 +65,9 @@ export default function Board({ userName, onLogout }: BoardProps) {
     try {
       await updateTask(id, data);
       setEditingTask(null);
-      showToast('Task updated', 'success');
+      showToast("Task updated", "success");
     } catch {
-      showToast('Failed to update task', 'error');
+      showToast("Failed to update task", "error");
     }
   }
 
@@ -75,9 +75,9 @@ export default function Board({ userName, onLogout }: BoardProps) {
     try {
       await removeTask(id);
       setEditingTask(null);
-      showToast('Task deleted', 'success');
+      showToast("Task deleted", "success");
     } catch {
-      showToast('Failed to delete task', 'error');
+      showToast("Failed to delete task", "error");
     }
   }
 

@@ -1,5 +1,5 @@
-import { getDb } from './db/index';
-import { createApp } from './app';
+import { getDb } from "./db/index";
+import { createApp } from "./app";
 
 const PORT = process.env.PORT || 3001;
 
@@ -17,5 +17,5 @@ function shutdown() {
   });
 }
 
-process.on('SIGINT', shutdown);
-process.on('SIGTERM', shutdown);
+process.on("SIGINT", shutdown);
+process.on("SIGTERM", shutdown);

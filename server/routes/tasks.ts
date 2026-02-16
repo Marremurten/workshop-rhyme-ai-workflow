@@ -1,7 +1,8 @@
-import { Router } from 'express';
-import type { Request, Response } from 'express';
-import type Database from 'better-sqlite3';
-import { requireAuth } from '../middleware/auth';
+import { Router } from "express";
+import type { Response } from "express";
+import type Database from "better-sqlite3";
+import { requireAuth } from "../middleware/auth";
+import type { AuthenticatedRequest } from "../types";
 
 interface TaskRow {
   id: number;
@@ -15,8 +16,13 @@ interface TaskRow {
   updated_at: string;
 }
 
-function getTaskById(db: Database.Database, id: string | number | bigint): TaskRow | undefined {
-  return db.prepare('SELECT * FROM tasks WHERE id = ?').get(id) as TaskRow | undefined;
+function getTaskById(
+  db: Database.Database,
+  id: string | number | bigint,
+): TaskRow | undefined {
+  return db.prepare("SELECT * FROM tasks WHERE id = ?").get(id) as
+    | TaskRow
+    | undefined;
 }
 
 export function createTasksRouter(db: Database.Database): Router {
@@ -26,7 +32,7 @@ export function createTasksRouter(db: Database.Database): Router {
   router.use(requireAuth);
 
   // GET /api/tasks
-  router.get('/', (_req: Request, res: Response) => {
+  router.get("/", (_req: Request, res: Response) => {
     const tasks = db
       .prepare('SELECT * FROM tasks ORDER BY "column", position ASC')
       .all() as TaskRow[];
@@ -34,16 +40,16 @@ export function createTasksRouter(db: Database.Database): Router {
   });
 
   // POST /api/tasks
-  router.post('/', (req: Request, res: Response) => {
+  router.post("/", (req: Request, res: Response) => {
     const { title, description, column: col } = req.body;
 
     if (!title) {
-      res.status(400).json({ error: 'Title is required' });
+      res.status(400).json({ error: "Title is required" });
       return;
     }
 
-    const targetColumn = col || 'todo';
-    const userId = (req as any).userId;
+    const targetColumn = col || "todo";
+    const userId = (req as AuthenticatedRequest).userId;
 
     // Calculate position: max position in column + 1000, or 1000 if empty
     const maxRow = db
@@ -54,7 +60,7 @@ export function createTasksRouter(db: Database.Database): Router {
 
     const result = db
       .prepare(
-        'INSERT INTO tasks (title, description, "column", position, created_by) VALUES (?, ?, ?, ?, ?)'
+        'INSERT INTO tasks (title, description, "column", position, created_by) VALUES (?, ?, ?, ?, ?)',
       )
       .run(title, description ?? null, targetColumn, position, userId);
 
@@ -63,30 +69,30 @@ export function createTasksRouter(db: Database.Database): Router {
   });
 
   // PUT /api/tasks/:id
-  router.put('/:id', (req: Request, res: Response) => {
+  router.put("/:id", (req: Request, res: Response) => {
     const { id } = req.params;
 
     const existing = getTaskById(db, id);
     if (!existing) {
-      res.status(404).json({ error: 'Task not found' });
+      res.status(404).json({ error: "Task not found" });
       return;
     }
 
     const { title, description, assignee_id, column: col } = req.body;
 
     const fields: string[] = [];
-    const values: any[] = [];
+    const values: (string | number | null)[] = [];
 
     if (title !== undefined) {
-      fields.push('title = ?');
+      fields.push("title = ?");
       values.push(title);
     }
     if (description !== undefined) {
-      fields.push('description = ?');
+      fields.push("description = ?");
       values.push(description);
     }
     if (assignee_id !== undefined) {
-      fields.push('assignee_id = ?');
+      fields.push("assignee_id = ?");
       values.push(assignee_id);
     }
     if (col !== undefined) {
@@ -94,12 +100,12 @@ export function createTasksRouter(db: Database.Database): Router {
       values.push(col);
     }
 
-    fields.push('updated_at = ?');
+    fields.push("updated_at = ?");
     values.push(new Date().toISOString());
     values.push(id);
 
-    db.prepare(`UPDATE tasks SET ${fields.join(', ')} WHERE id = ?`).run(
-      ...values
+    db.prepare(`UPDATE tasks SET ${fields.join(", ")} WHERE id = ?`).run(
+      ...values,
     );
 
     const task = getTaskById(db, id);
@@ -107,26 +113,26 @@ export function createTasksRouter(db: Database.Database): Router {
   });
 
   // DELETE /api/tasks/:id
-  router.delete('/:id', (req: Request, res: Response) => {
+  router.delete("/:id", (req: Request, res: Response) => {
     const { id } = req.params;
 
     const existing = getTaskById(db, id);
     if (!existing) {
-      res.status(404).json({ error: 'Task not found' });
+      res.status(404).json({ error: "Task not found" });
       return;
     }
 
-    db.prepare('DELETE FROM tasks WHERE id = ?').run(id);
-    res.json({ message: 'Task deleted' });
+    db.prepare("DELETE FROM tasks WHERE id = ?").run(id);
+    res.json({ message: "Task deleted" });
   });
 
   // PATCH /api/tasks/:id/move
-  router.patch('/:id/move', (req: Request, res: Response) => {
+  router.patch("/:id/move", (req: Request, res: Response) => {
     const { id } = req.params;
 
     const existing = getTaskById(db, id);
     if (!existing) {
-      res.status(404).json({ error: 'Task not found' });
+      res.status(404).json({ error: "Task not found" });
       return;
     }
 
@@ -135,7 +141,7 @@ export function createTasksRouter(db: Database.Database): Router {
     // Get all OTHER tasks in the target column, ordered by position
     const otherTasks = db
       .prepare(
-        'SELECT * FROM tasks WHERE "column" = ? AND id != ? ORDER BY position ASC'
+        'SELECT * FROM tasks WHERE "column" = ? AND id != ? ORDER BY position ASC',
       )
       .all(targetColumn, id) as TaskRow[];
 
@@ -157,7 +163,7 @@ export function createTasksRouter(db: Database.Database): Router {
     }
 
     db.prepare(
-      'UPDATE tasks SET "column" = ?, position = ?, updated_at = datetime(\'now\') WHERE id = ?'
+      "UPDATE tasks SET \"column\" = ?, position = ?, updated_at = datetime('now') WHERE id = ?",
     ).run(targetColumn, newPosition, id);
 
     const task = getTaskById(db, id);

@@ -1,4 +1,4 @@
-export type ColumnId = 'todo' | 'in_progress' | 'review' | 'done';
+export type ColumnId = "todo" | "in_progress" | "review" | "done";
 
 export interface Task {
   id: number;
@@ -21,5 +21,5 @@ export interface User {
 export interface ToastMessage {
   id: string;
   message: string;
-  type: 'success' | 'error';
+  type: "success" | "error";
 }

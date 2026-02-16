@@ -1,5 +1,5 @@
-import React from 'react';
-import Button from './ui/Button';
+import React from "react";
+import Button from "./ui/Button";
 
 interface BoardHeaderProps {
   userName: string;
@@ -7,7 +7,11 @@ interface BoardHeaderProps {
   onLogout: () => void;
 }
 
-const BoardHeader: React.FC<BoardHeaderProps> = ({ userName, onRefresh, onLogout }) => {
+const BoardHeader: React.FC<BoardHeaderProps> = ({
+  userName,
+  onRefresh,
+  onLogout,
+}) => {
   return (
     <header className="flex items-center justify-between border-b border-gray-800 bg-gray-900 px-6 py-3">
       <h1 className="text-xl font-bold text-white">Kanban Board</h1>

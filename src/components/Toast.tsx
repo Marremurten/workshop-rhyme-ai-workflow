@@ -1,14 +1,20 @@
-import React, { useEffect } from 'react';
-import type { ToastMessage } from '../types';
+import React, { useEffect } from "react";
+import type { ToastMessage } from "../types";
 
 interface ToastProps {
   toasts: ToastMessage[];
   onDismiss: (id: string) => void;
 }
 
-function ToastItem({ toast, onDismiss }: { toast: ToastMessage; onDismiss: (id: string) => void }) {
+function ToastItem({
+  toast,
+  onDismiss,
+}: {
+  toast: ToastMessage;
+  onDismiss: (id: string) => void;
+}) {
   useEffect(() => {
-    if (toast.type !== 'success') return;
+    if (toast.type !== "success") return;
 
     const timer = setTimeout(() => {
       onDismiss(toast.id);
@@ -20,7 +26,7 @@ function ToastItem({ toast, onDismiss }: { toast: ToastMessage; onDismiss: (id: 
   return (
     <div
       className={`flex items-center justify-between rounded px-4 py-3 text-white shadow-lg ${
-        toast.type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        toast.type === "success" ? "bg-green-500" : "bg-red-500"
       }`}
     >
       <span>{toast.message}</span>
