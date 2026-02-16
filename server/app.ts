@@ -2,6 +2,9 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import type Database from 'better-sqlite3';
 import { errorHandler } from './middleware/error';
+import { createAuthRouter } from './routes/auth';
+import { createUsersRouter } from './routes/users';
+import { createTasksRouter } from './routes/tasks';
 
 export function createApp(db: Database.Database): express.Express {
   const app = express();
@@ -11,6 +14,11 @@ export function createApp(db: Database.Database): express.Express {
 
   // Make db available on the app for routes to use
   app.set('db', db);
+
+  // Register API routes
+  app.use('/api/auth', createAuthRouter(db));
+  app.use('/api/users', createUsersRouter(db));
+  app.use('/api/tasks', createTasksRouter(db));
 
   // Eagerly register error handler for JSON parse errors etc.
   // Express only invokes 4-param handlers when next(err) is called,
