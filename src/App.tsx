@@ -18,9 +18,9 @@ function AuthGate() {
 
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-50">
-        <div className="w-full max-w-sm rounded bg-white p-6 shadow">
-          <h1 className="mb-6 text-center text-xl font-semibold">Kanban Board</h1>
+      <div className="flex min-h-screen items-center justify-center bg-gray-950">
+        <div className="w-full max-w-sm rounded bg-gray-900 p-6 shadow">
+          <h1 className="mb-6 text-center text-xl font-semibold text-white">Kanban Board</h1>
           {mode === 'login' ? (
             <LoginForm onLogin={login} onSwitchToRegister={() => setMode('register')} />
           ) : (
@@ -32,7 +32,7 @@ function AuthGate() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-950">
       <Board userName={user.name} onLogout={logout} />
     </div>
   );

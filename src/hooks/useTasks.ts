@@ -5,7 +5,7 @@ interface Task {
   id: number;
   title: string;
   description: string | null;
-  column: 'todo' | 'in_progress' | 'done';
+  column: 'todo' | 'in_progress' | 'review' | 'done';
   position: number;
   assignee_id: number | null;
   created_by: number;
@@ -13,15 +13,16 @@ interface Task {
   updated_at: string;
 }
 
-type ColumnId = 'todo' | 'in_progress' | 'done';
+type ColumnId = 'todo' | 'in_progress' | 'review' | 'done';
 
-const COLUMN_IDS: ColumnId[] = ['todo', 'in_progress', 'done'];
+const COLUMN_IDS: ColumnId[] = ['todo', 'in_progress', 'review', 'done'];
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Record<number, Task>>({});
   const [columns, setColumns] = useState<Record<ColumnId, number[]>>({
     todo: [],
     in_progress: [],
+    review: [],
     done: [],
   });
   const [loading, setLoading] = useState(true);
@@ -32,7 +33,7 @@ export function useTasks() {
       const data = await api.fetchTasks();
       const taskList = (data as { tasks: Task[] }).tasks;
       const taskMap: Record<number, Task> = {};
-      const colMap: Record<ColumnId, number[]> = { todo: [], in_progress: [], done: [] };
+      const colMap: Record<ColumnId, number[]> = { todo: [], in_progress: [], review: [], done: [] };
 
       for (const task of taskList) {
         taskMap[task.id] = task;
@@ -124,7 +125,7 @@ export function useTasks() {
     fetchTasks();
   }, [fetchTasks]);
 
-  return { tasks, columns, loading, fetchTasks, addTask, updateTask, removeTask, moveTask };
+  return { tasks, columns, setTasks, setColumns, loading, fetchTasks, addTask, updateTask, removeTask, moveTask };
 }
 
 export default useTasks;

@@ -7,7 +7,7 @@ interface Task {
   id: number;
   title: string;
   description: string | null;
-  column: 'todo' | 'in_progress' | 'done';
+  column: 'todo' | 'in_progress' | 'review' | 'done';
   position: number;
   assignee_id: number | null;
   created_by: number;
@@ -28,18 +28,18 @@ export default function Column({ id, title, tasks, users, onAddTask, onEditTask 
   const { setNodeRef } = useDroppable({ id: `column-${id}` });
 
   return (
-    <div ref={setNodeRef} className="w-80 shrink-0 rounded-lg bg-gray-200 p-4">
+    <div ref={setNodeRef} className="flex min-w-0 flex-1 flex-col rounded-lg bg-gray-800/60 p-4">
       <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-bold text-gray-800">{title}</h2>
-        <span className="rounded-full bg-gray-300 px-2 text-sm text-gray-700">
+        <h2 className="font-bold text-white">{title}</h2>
+        <span className="rounded-full bg-gray-700 px-2 text-sm text-gray-300">
           {tasks.length}
         </span>
       </div>
 
       <SortableContext items={tasks.map((t) => t.id)} strategy={verticalListSortingStrategy}>
-        <div className="min-h-[2rem] space-y-2">
+        <div className="min-h-0 flex-1 space-y-2 overflow-y-auto">
           {tasks.length === 0 ? (
-            <p className="py-4 text-center text-sm text-gray-400">No tasks yet</p>
+            <p className="py-4 text-center text-sm text-gray-500">No tasks yet</p>
           ) : (
             tasks.map((task) => (
               <TaskCard

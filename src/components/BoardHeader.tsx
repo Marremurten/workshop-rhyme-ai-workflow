@@ -8,13 +8,13 @@ interface BoardHeaderProps {
 
 const BoardHeader: React.FC<BoardHeaderProps> = ({ userName, onRefresh, onLogout }) => {
   return (
-    <header className="flex items-center justify-between border-b bg-white px-6 py-3">
-      <h1 className="text-xl font-bold text-gray-900">Kanban Board</h1>
+    <header className="flex items-center justify-between border-b border-gray-800 bg-gray-900 px-6 py-3">
+      <h1 className="text-xl font-bold text-white">Kanban Board</h1>
       <div className="flex items-center gap-4">
-        <span className="text-gray-700">{userName}</span>
+        <span className="text-gray-300">{userName}</span>
         <button
           onClick={onRefresh}
-          className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200"
+          className="rounded bg-gray-700 px-3 py-1 text-sm text-gray-300 hover:bg-gray-600"
         >
           Refresh
         </button>

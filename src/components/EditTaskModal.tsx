@@ -4,7 +4,7 @@ interface Task {
   id: number;
   title: string;
   description: string | null;
-  column: 'todo' | 'in_progress' | 'done';
+  column: 'todo' | 'in_progress' | 'review' | 'done';
   position: number;
   assignee_id: number | null;
   created_by: number;
@@ -49,13 +49,13 @@ export default function EditTaskModal({ task, users, onSave, onDelete, onClose }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="w-full max-w-lg rounded-xl bg-white p-6">
+      <div className="w-full max-w-lg rounded-xl bg-gray-800 p-6">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-lg font-bold">Edit Task</h2>
+          <h2 className="text-lg font-bold text-white">Edit Task</h2>
           <button
             onClick={onClose}
             aria-label="Close"
-            className="rounded p-1 text-gray-400 hover:text-gray-600"
+            className="rounded p-1 text-gray-400 hover:text-gray-300"
           >
             &times;
           </button>
@@ -63,7 +63,7 @@ export default function EditTaskModal({ task, users, onSave, onDelete, onClose }
 
         <div className="space-y-4">
           <div>
-            <label htmlFor="edit-title" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="edit-title" className="block text-sm font-medium text-gray-300">
               Title
             </label>
             <input
@@ -71,12 +71,12 @@ export default function EditTaskModal({ task, users, onSave, onDelete, onClose }
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="mt-1 block w-full rounded border border-gray-300 px-3 py-2"
+              className="mt-1 block w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
             />
           </div>
 
           <div>
-            <label htmlFor="edit-description" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="edit-description" className="block text-sm font-medium text-gray-300">
               Description
             </label>
             <textarea
@@ -84,12 +84,12 @@ export default function EditTaskModal({ task, users, onSave, onDelete, onClose }
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
-              className="mt-1 block w-full rounded border border-gray-300 px-3 py-2"
+              className="mt-1 block w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
             />
           </div>
 
           <div>
-            <label htmlFor="edit-assignee" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="edit-assignee" className="block text-sm font-medium text-gray-300">
               Assignee
             </label>
             <select
@@ -97,7 +97,7 @@ export default function EditTaskModal({ task, users, onSave, onDelete, onClose }
               aria-label="Assignee"
               value={assigneeId}
               onChange={(e) => setAssigneeId(e.target.value)}
-              className="mt-1 block w-full rounded border border-gray-300 px-3 py-2"
+              className="mt-1 block w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
             >
               <option value="">Unassigned</option>
               {users.map((user) => (
@@ -109,7 +109,7 @@ export default function EditTaskModal({ task, users, onSave, onDelete, onClose }
           </div>
 
           <div>
-            <label htmlFor="edit-column" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="edit-column" className="block text-sm font-medium text-gray-300">
               Column
             </label>
             <select
@@ -117,10 +117,11 @@ export default function EditTaskModal({ task, users, onSave, onDelete, onClose }
               aria-label="Column"
               value={column}
               onChange={(e) => setColumn(e.target.value as Task['column'])}
-              className="mt-1 block w-full rounded border border-gray-300 px-3 py-2"
+              className="mt-1 block w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
             >
               <option value="todo">To Do</option>
               <option value="in_progress">In Progress</option>
+              <option value="review">Review</option>
               <option value="done">Done</option>
             </select>
           </div>

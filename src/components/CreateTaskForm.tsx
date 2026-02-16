@@ -22,6 +22,7 @@ export default function CreateTaskForm({ column, onSubmit }: CreateTaskFormProps
       if (title.trim()) {
         onSubmit({ title: title.trim(), column });
         setTitle('');
+        setIsOpen(false);
       }
     } else if (e.key === 'Escape') {
       setIsOpen(false);
@@ -33,7 +34,7 @@ export default function CreateTaskForm({ column, onSubmit }: CreateTaskFormProps
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="mt-3 w-full rounded py-1 text-sm text-gray-500 hover:bg-gray-300"
+        className="mt-3 w-full rounded py-1 text-sm text-gray-500 hover:bg-gray-700"
       >
         + Add a card
       </button>
@@ -49,7 +50,7 @@ export default function CreateTaskForm({ column, onSubmit }: CreateTaskFormProps
         onChange={(e) => setTitle(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Enter a title..."
-        className="w-full rounded border border-gray-300 px-3 py-2 text-sm"
+        className="w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-sm text-white"
       />
     </div>
   );
