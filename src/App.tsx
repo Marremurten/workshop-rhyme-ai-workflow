@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { AuthProvider, useAuth } from './hooks/useAuth';
 import LoginForm from './components/LoginForm';
 import RegisterForm from './components/RegisterForm';
+import Board from './components/Board';
 
 function AuthGate() {
   const { user, loading, login, logout, register } = useAuth();
@@ -32,21 +33,7 @@ function AuthGate() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <header className="flex items-center justify-between bg-white px-4 py-3 shadow">
-        <h1 className="text-lg font-semibold">Kanban Board</h1>
-        <div className="flex items-center gap-3">
-          <span className="text-sm text-gray-600">{user.name}</span>
-          <button
-            onClick={logout}
-            className="rounded bg-gray-200 px-3 py-1 text-sm hover:bg-gray-300"
-          >
-            Logout
-          </button>
-        </div>
-      </header>
-      <div data-testid="board-placeholder" className="p-4">
-        Board
-      </div>
+      <Board userName={user.name} onLogout={logout} />
     </div>
   );
 }

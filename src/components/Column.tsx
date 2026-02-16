@@ -1,5 +1,7 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import TaskCard from './TaskCard';
+import CreateTaskForm from './CreateTaskForm';
 
 interface Task {
   id: number;
@@ -17,11 +19,12 @@ interface ColumnProps {
   id: string;
   title: string;
   tasks: Task[];
+  users?: Array<{ id: number; name: string }>;
   onAddTask: (data: { title: string; column: string }) => void;
   onEditTask: (task: Task) => void;
 }
 
-export default function Column({ id, title, tasks, onAddTask, onEditTask }: ColumnProps) {
+export default function Column({ id, title, tasks, users, onAddTask, onEditTask }: ColumnProps) {
   const { setNodeRef } = useDroppable({ id: `column-${id}` });
 
   return (
@@ -39,24 +42,18 @@ export default function Column({ id, title, tasks, onAddTask, onEditTask }: Colu
             <p className="py-4 text-center text-sm text-gray-400">No tasks yet</p>
           ) : (
             tasks.map((task) => (
-              <div
+              <TaskCard
                 key={task.id}
-                className="cursor-pointer rounded bg-white p-3 shadow-sm hover:shadow"
+                task={task}
+                users={users}
                 onClick={() => onEditTask(task)}
-              >
-                {task.title}
-              </div>
+              />
             ))
           )}
         </div>
       </SortableContext>
 
-      <button
-        onClick={() => onAddTask({ title: '', column: id })}
-        className="mt-3 w-full rounded py-1 text-sm text-gray-500 hover:bg-gray-300"
-      >
-        + Add a card
-      </button>
+      <CreateTaskForm column={id} onSubmit={onAddTask} />
     </div>
   );
 }

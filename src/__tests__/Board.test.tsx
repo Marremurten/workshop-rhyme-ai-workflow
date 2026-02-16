@@ -13,6 +13,11 @@ vi.mock('../hooks/useTasks', () => ({
   useTasks: (...args: unknown[]) => mockUseTasks(...args),
 }));
 
+// Mock the API client
+vi.mock('../api/client', () => ({
+  fetchUsers: vi.fn(() => Promise.resolve({ users: [] })),
+}));
+
 // Mock @dnd-kit/core — provide a passthrough DndContext that just renders children
 vi.mock('@dnd-kit/core', () => {
   const actual = vi.importActual('@dnd-kit/core');
@@ -107,7 +112,7 @@ describe('Board', () => {
   it('renders three columns with titles "To Do", "In Progress", "Done"', () => {
     mockUseTasks.mockReturnValue(defaultHookReturn());
 
-    render(<Board />);
+    render(<Board userName="Test User" onLogout={vi.fn()} />);
 
     expect(screen.getByText('To Do')).toBeInTheDocument();
     expect(screen.getByText('In Progress')).toBeInTheDocument();
@@ -124,7 +129,7 @@ describe('Board', () => {
 
     mockUseTasks.mockReturnValue(defaultHookReturn({ tasks, columns }));
 
-    render(<Board />);
+    render(<Board userName="Test User" onLogout={vi.fn()} />);
 
     // All task titles should be rendered
     expect(screen.getByText('Todo Task')).toBeInTheDocument();
@@ -135,7 +140,7 @@ describe('Board', () => {
   it('wraps content in a DndContext for drag-and-drop', () => {
     mockUseTasks.mockReturnValue(defaultHookReturn());
 
-    render(<Board />);
+    render(<Board userName="Test User" onLogout={vi.fn()} />);
 
     // DndContext should be rendered (our mock adds data-testid)
     expect(screen.getByTestId('dnd-context')).toBeInTheDocument();
@@ -144,7 +149,7 @@ describe('Board', () => {
   it('registers an onDragEnd handler on the DndContext', () => {
     mockUseTasks.mockReturnValue(defaultHookReturn());
 
-    render(<Board />);
+    render(<Board userName="Test User" onLogout={vi.fn()} />);
 
     const dndContext = screen.getByTestId('dnd-context');
     expect(dndContext.dataset.ondragend).toBe('function');
@@ -153,7 +158,7 @@ describe('Board', () => {
   it('shows loading skeleton while tasks are loading', () => {
     mockUseTasks.mockReturnValue(defaultHookReturn({ loading: true }));
 
-    const { container } = render(<Board />);
+    const { container } = render(<Board userName="Test User" onLogout={vi.fn()} />);
 
     // When loading, the board should show some kind of loading/skeleton indicator
     // Look for common skeleton patterns: animate-pulse class or "loading" text
@@ -168,7 +173,7 @@ describe('Board', () => {
     const fetchTasks = vi.fn();
     mockUseTasks.mockReturnValue(defaultHookReturn({ fetchTasks }));
 
-    render(<Board />);
+    render(<Board userName="Test User" onLogout={vi.fn()} />);
 
     // The hook itself handles fetchTasks on mount, so we just verify
     // the hook was called (Board uses useTasks)
@@ -184,7 +189,7 @@ describe('Board', () => {
 
     mockUseTasks.mockReturnValue(defaultHookReturn({ tasks, columns }));
 
-    render(<Board />);
+    render(<Board userName="Test User" onLogout={vi.fn()} />);
 
     expect(screen.getByText('First Todo')).toBeInTheDocument();
     expect(screen.getByText('Second Todo')).toBeInTheDocument();
