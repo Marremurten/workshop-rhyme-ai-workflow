@@ -1,18 +1,9 @@
 import { Router } from 'express';
 import type { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import type Database from 'better-sqlite3';
 import { requireAuth } from '../middleware/auth';
-
-const JWT_SECRET = process.env.JWT_SECRET || 'dev-secret';
-const COOKIE_OPTIONS = {
-  httpOnly: true,
-  sameSite: 'lax' as const,
-  secure: process.env.NODE_ENV === 'production',
-  path: '/',
-  maxAge: 7 * 24 * 60 * 60 * 1000,
-};
+import { COOKIE_OPTIONS, signToken } from '../config';
 
 export function createAuthRouter(db: Database.Database): Router {
   const router = Router();
@@ -38,7 +29,7 @@ export function createAuthRouter(db: Database.Database): Router {
       .run(email, name, password_hash);
 
     const user = { id: result.lastInsertRowid as number, email, name };
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
+    const token = signToken(user.id);
 
     res.cookie('token', token, COOKIE_OPTIONS);
     res.status(201).json({ user });
@@ -58,7 +49,7 @@ export function createAuthRouter(db: Database.Database): Router {
     }
 
     const user = { id: row.id, email: row.email, name: row.name };
-    const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '7d' });
+    const token = signToken(user.id);
 
     res.cookie('token', token, COOKIE_OPTIONS);
     res.status(200).json({ user });
@@ -86,12 +77,8 @@ export function createAuthRouter(db: Database.Database): Router {
 
   // POST /api/auth/logout
   router.post('/logout', (_req: Request, res: Response) => {
-    res.clearCookie('token', {
-      httpOnly: true,
-      sameSite: 'lax' as const,
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-    });
+    const { maxAge: _, ...clearOptions } = COOKIE_OPTIONS;
+    res.clearCookie('token', clearOptions);
     res.status(200).json({ message: 'Logged out' });
   });
 

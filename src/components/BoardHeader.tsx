@@ -1,4 +1,5 @@
 import React from 'react';
+import Button from './ui/Button';
 
 interface BoardHeaderProps {
   userName: string;
@@ -12,18 +13,12 @@ const BoardHeader: React.FC<BoardHeaderProps> = ({ userName, onRefresh, onLogout
       <h1 className="text-xl font-bold text-white">Kanban Board</h1>
       <div className="flex items-center gap-4">
         <span className="text-gray-300">{userName}</span>
-        <button
-          onClick={onRefresh}
-          className="rounded bg-gray-700 px-3 py-1 text-sm text-gray-300 hover:bg-gray-600"
-        >
+        <Button variant="secondary" onClick={onRefresh}>
           Refresh
-        </button>
-        <button
-          onClick={onLogout}
-          className="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600"
-        >
+        </Button>
+        <Button variant="danger" onClick={onLogout} className="px-3 py-1">
           Logout
-        </button>
+        </Button>
       </div>
     </header>
   );

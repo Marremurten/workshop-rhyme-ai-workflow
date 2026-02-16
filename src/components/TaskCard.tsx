@@ -1,18 +1,7 @@
 import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-
-interface Task {
-  id: number;
-  title: string;
-  description: string | null;
-  column: 'todo' | 'in_progress' | 'review' | 'done';
-  position: number;
-  assignee_id: number | null;
-  created_by: number;
-  created_at: string;
-  updated_at: string;
-}
+import type { Task } from '../types';
 
 interface TaskCardProps {
   task: Task;

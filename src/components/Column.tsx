@@ -1,19 +1,8 @@
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import type { Task } from '../types';
 import TaskCard from './TaskCard';
 import CreateTaskForm from './CreateTaskForm';
-
-interface Task {
-  id: number;
-  title: string;
-  description: string | null;
-  column: 'todo' | 'in_progress' | 'review' | 'done';
-  position: number;
-  assignee_id: number | null;
-  created_by: number;
-  created_at: string;
-  updated_at: string;
-}
 
 interface ColumnProps {
   id: string;

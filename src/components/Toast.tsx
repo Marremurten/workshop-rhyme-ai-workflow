@@ -1,10 +1,5 @@
 import React, { useEffect } from 'react';
-
-interface ToastMessage {
-  id: string;
-  message: string;
-  type: 'success' | 'error';
-}
+import type { ToastMessage } from '../types';
 
 interface ToastProps {
   toasts: ToastMessage[];

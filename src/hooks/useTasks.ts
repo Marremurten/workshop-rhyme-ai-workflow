@@ -1,21 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import * as api from '../api/client';
-
-interface Task {
-  id: number;
-  title: string;
-  description: string | null;
-  column: 'todo' | 'in_progress' | 'review' | 'done';
-  position: number;
-  assignee_id: number | null;
-  created_by: number;
-  created_at: string;
-  updated_at: string;
-}
-
-type ColumnId = 'todo' | 'in_progress' | 'review' | 'done';
-
-const COLUMN_IDS: ColumnId[] = ['todo', 'in_progress', 'review', 'done'];
+import type { Task, ColumnId } from '../types';
+import { COLUMN_IDS } from '../constants';
 
 export function useTasks() {
   const [tasks, setTasks] = useState<Record<number, Task>>({});

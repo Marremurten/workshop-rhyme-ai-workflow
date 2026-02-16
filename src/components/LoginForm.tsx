@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from 'react';
+import FormField, { inputClassName } from './ui/FormField';
+import Button from './ui/Button';
 
 interface LoginFormProps {
   onLogin: (email: string, password: string) => Promise<void>;
@@ -22,44 +24,31 @@ export default function LoginForm({ onLogin, onSwitchToRegister }: LoginFormProp
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="login-email" className="block text-sm font-medium text-gray-300">
-          Email
-        </label>
+      <FormField label="Email" htmlFor="login-email">
         <input
           id="login-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 block w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+          className={inputClassName}
         />
-      </div>
-      <div>
-        <label htmlFor="login-password" className="block text-sm font-medium text-gray-300">
-          Password
-        </label>
+      </FormField>
+      <FormField label="Password" htmlFor="login-password">
         <input
           id="login-password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 block w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+          className={inputClassName}
         />
-      </div>
+      </FormField>
       {error && <p className="text-sm text-red-600">{error}</p>}
-      <button
-        type="submit"
-        className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-      >
+      <Button type="submit" className="w-full">
         Log in
-      </button>
-      <button
-        type="button"
-        onClick={onSwitchToRegister}
-        className="w-full text-sm text-blue-600 hover:underline"
-      >
+      </Button>
+      <Button type="button" variant="ghost" onClick={onSwitchToRegister}>
         Create account
-      </button>
+      </Button>
     </form>
   );
 }

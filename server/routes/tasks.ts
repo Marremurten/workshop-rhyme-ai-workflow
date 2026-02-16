@@ -15,6 +15,10 @@ interface TaskRow {
   updated_at: string;
 }
 
+function getTaskById(db: Database.Database, id: string | number | bigint): TaskRow | undefined {
+  return db.prepare('SELECT * FROM tasks WHERE id = ?').get(id) as TaskRow | undefined;
+}
+
 export function createTasksRouter(db: Database.Database): Router {
   const router = Router();
 
@@ -54,10 +58,7 @@ export function createTasksRouter(db: Database.Database): Router {
       )
       .run(title, description ?? null, targetColumn, position, userId);
 
-    const task = db
-      .prepare('SELECT * FROM tasks WHERE id = ?')
-      .get(result.lastInsertRowid) as TaskRow;
-
+    const task = getTaskById(db, result.lastInsertRowid);
     res.status(201).json({ task });
   });
 
@@ -65,10 +66,7 @@ export function createTasksRouter(db: Database.Database): Router {
   router.put('/:id', (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const existing = db
-      .prepare('SELECT * FROM tasks WHERE id = ?')
-      .get(id) as TaskRow | undefined;
-
+    const existing = getTaskById(db, id);
     if (!existing) {
       res.status(404).json({ error: 'Task not found' });
       return;
@@ -104,10 +102,7 @@ export function createTasksRouter(db: Database.Database): Router {
       ...values
     );
 
-    const task = db
-      .prepare('SELECT * FROM tasks WHERE id = ?')
-      .get(id) as TaskRow;
-
+    const task = getTaskById(db, id);
     res.json({ task });
   });
 
@@ -115,10 +110,7 @@ export function createTasksRouter(db: Database.Database): Router {
   router.delete('/:id', (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const existing = db
-      .prepare('SELECT * FROM tasks WHERE id = ?')
-      .get(id) as TaskRow | undefined;
-
+    const existing = getTaskById(db, id);
     if (!existing) {
       res.status(404).json({ error: 'Task not found' });
       return;
@@ -132,10 +124,7 @@ export function createTasksRouter(db: Database.Database): Router {
   router.patch('/:id/move', (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const existing = db
-      .prepare('SELECT * FROM tasks WHERE id = ?')
-      .get(id) as TaskRow | undefined;
-
+    const existing = getTaskById(db, id);
     if (!existing) {
       res.status(404).json({ error: 'Task not found' });
       return;
@@ -171,10 +160,7 @@ export function createTasksRouter(db: Database.Database): Router {
       'UPDATE tasks SET "column" = ?, position = ?, updated_at = datetime(\'now\') WHERE id = ?'
     ).run(targetColumn, newPosition, id);
 
-    const task = db
-      .prepare('SELECT * FROM tasks WHERE id = ?')
-      .get(id) as TaskRow;
-
+    const task = getTaskById(db, id);
     res.json({ task });
   });
 

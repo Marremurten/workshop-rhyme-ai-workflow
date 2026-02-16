@@ -1,4 +1,6 @@
 import { useState, type FormEvent } from 'react';
+import FormField, { inputClassName } from './ui/FormField';
+import Button from './ui/Button';
 
 interface RegisterFormProps {
   onRegister: (email: string, name: string, password: string) => Promise<void>;
@@ -23,56 +25,40 @@ export default function RegisterForm({ onRegister, onSwitchToLogin }: RegisterFo
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label htmlFor="register-email" className="block text-sm font-medium text-gray-300">
-          Email
-        </label>
+      <FormField label="Email" htmlFor="register-email">
         <input
           id="register-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mt-1 block w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+          className={inputClassName}
         />
-      </div>
-      <div>
-        <label htmlFor="register-name" className="block text-sm font-medium text-gray-300">
-          Name
-        </label>
+      </FormField>
+      <FormField label="Name" htmlFor="register-name">
         <input
           id="register-name"
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="mt-1 block w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+          className={inputClassName}
         />
-      </div>
-      <div>
-        <label htmlFor="register-password" className="block text-sm font-medium text-gray-300">
-          Password
-        </label>
+      </FormField>
+      <FormField label="Password" htmlFor="register-password">
         <input
           id="register-password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="mt-1 block w-full rounded border border-gray-600 bg-gray-700 px-3 py-2 text-white"
+          className={inputClassName}
         />
-      </div>
+      </FormField>
       {error && <p className="text-sm text-red-600">{error}</p>}
-      <button
-        type="submit"
-        className="w-full rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-      >
+      <Button type="submit" className="w-full">
         Register
-      </button>
-      <button
-        type="button"
-        onClick={onSwitchToLogin}
-        className="w-full text-sm text-blue-600 hover:underline"
-      >
+      </Button>
+      <Button type="button" variant="ghost" onClick={onSwitchToLogin}>
         Sign in
-      </button>
+      </Button>
     </form>
   );
 }
