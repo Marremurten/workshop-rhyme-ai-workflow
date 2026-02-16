@@ -67,7 +67,18 @@ export function useTasks() {
   const updateTask = useCallback(async (id: number, data: Record<string, unknown>) => {
     const result = await api.updateTask(id, data);
     const task = (result as { task: Task }).task;
-    setTasks((prev) => ({ ...prev, [task.id]: task }));
+    setTasks((prev) => {
+      const oldTask = prev[id];
+      if (oldTask && oldTask.column !== task.column) {
+        setColumns((prevCols) => {
+          const next = { ...prevCols };
+          next[oldTask.column] = next[oldTask.column].filter((tid) => tid !== id);
+          next[task.column] = [...next[task.column], task.id];
+          return next;
+        });
+      }
+      return { ...prev, [task.id]: task };
+    });
   }, []);
 
   const removeTask = useCallback(async (id: number) => {
