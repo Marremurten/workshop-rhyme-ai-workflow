@@ -3,16 +3,16 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { Task } from "../../shared/types";
+import type { Task, ColumnId, CreateTaskInput } from "../../shared/types";
 import TaskCard from "./TaskCard";
 import CreateTaskForm from "./CreateTaskForm";
 
 interface ColumnProps {
-  id: string;
+  id: ColumnId;
   title: string;
   tasks: Task[];
   users?: Array<{ id: number; name: string }>;
-  onAddTask: (data: { title: string; column: string }) => void;
+  onAddTask: (data: CreateTaskInput) => void;
   onEditTask: (task: Task) => void;
 }
 

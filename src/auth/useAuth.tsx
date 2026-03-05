@@ -27,8 +27,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     api
       .fetchMe()
       .then((data) => {
-        setUser((data as { user: User }).user);
+        setUser(data.user);
       })
+      // Expected to fail when user is not authenticated
       .catch(() => {
         setUser(null);
       })
@@ -39,7 +40,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = useCallback(async (email: string, password: string) => {
     const data = await api.login(email, password);
-    setUser((data as { user: User }).user);
+    setUser(data.user);
   }, []);
 
   const logout = useCallback(async () => {
@@ -50,7 +51,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = useCallback(
     async (email: string, name: string, password: string) => {
       const data = await api.register(email, name, password);
-      setUser((data as { user: User }).user);
+      setUser(data.user);
     },
     [],
   );

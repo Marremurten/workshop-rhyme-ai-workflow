@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import * as api from "../api/client";
-import type { Task, ColumnId } from "../../shared/types";
+import type { Task, ColumnId, CreateTaskInput, UpdateTaskInput } from "../../shared/types";
 import { COLUMN_IDS } from "../constants";
 
 export function useTasks() {
@@ -17,7 +17,7 @@ export function useTasks() {
     setLoading(true);
     try {
       const data = await api.fetchTasks();
-      const taskList = (data as { tasks: Task[] }).tasks;
+      const taskList = data.tasks;
       const taskMap: Record<number, Task> = {};
       const colMap: Record<ColumnId, number[]> = {
         todo: [],
@@ -45,9 +45,9 @@ export function useTasks() {
     }
   }, []);
 
-  const addTask = useCallback(async (data: Record<string, unknown>) => {
+  const addTask = useCallback(async (data: CreateTaskInput) => {
     const result = await api.createTask(data);
-    const task = (result as { task: Task }).task;
+    const task = result.task;
     setTasks((prev) => ({ ...prev, [task.id]: task }));
     setColumns((prev) => ({
       ...prev,
@@ -56,9 +56,9 @@ export function useTasks() {
   }, []);
 
   const updateTask = useCallback(
-    async (id: number, data: Record<string, unknown>) => {
+    async (id: number, data: UpdateTaskInput) => {
       const result = await api.updateTask(id, data);
-      const task = (result as { task: Task }).task;
+      const task = result.task;
       setTasks((prev) => {
         const oldTask = prev[id];
         if (oldTask && oldTask.column !== task.column) {
@@ -77,24 +77,21 @@ export function useTasks() {
     [],
   );
 
-  const removeTask = useCallback(
-    async (id: number) => {
-      const task = tasks[id];
-      await api.deleteTask(id);
-      setTasks((prev) => {
-        const next = { ...prev };
-        delete next[id];
-        return next;
-      });
+  const removeTask = useCallback(async (id: number) => {
+    await api.deleteTask(id);
+    setTasks((prev) => {
+      const task = prev[id];
       if (task) {
-        setColumns((prev) => ({
-          ...prev,
-          [task.column]: prev[task.column].filter((tid) => tid !== id),
+        setColumns((prevCols) => ({
+          ...prevCols,
+          [task.column]: prevCols[task.column].filter((tid) => tid !== id),
         }));
       }
-    },
-    [tasks],
-  );
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
+  }, []);
 
   const moveTask = useCallback(
     async (id: number, column: ColumnId, index: number) => {

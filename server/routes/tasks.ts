@@ -5,6 +5,8 @@ import { requireAuth } from "../middleware/auth";
 import type { AuthenticatedRequest } from "../types";
 import type { Task } from "../../shared/types";
 
+const POSITION_INCREMENT = 1000;
+
 function getTaskById(
   db: Database.Database,
   id: string | number | bigint,
@@ -45,7 +47,7 @@ export function createTasksRouter(db: Database.Database): Router {
       .prepare('SELECT MAX(position) as maxPos FROM tasks WHERE "column" = ?')
       .get(targetColumn) as { maxPos: number | null } | undefined;
 
-    const position = (maxRow?.maxPos ?? 0) + 1000;
+    const position = (maxRow?.maxPos ?? 0) + POSITION_INCREMENT;
 
     const result = db
       .prepare(
@@ -138,13 +140,13 @@ export function createTasksRouter(db: Database.Database): Router {
 
     if (otherTasks.length === 0) {
       // Empty column
-      newPosition = 1000;
+      newPosition = POSITION_INCREMENT;
     } else if (index === 0) {
       // Start of column
       newPosition = otherTasks[0].position / 2;
     } else if (index >= otherTasks.length) {
       // End of column
-      newPosition = otherTasks[otherTasks.length - 1].position + 1000;
+      newPosition = otherTasks[otherTasks.length - 1].position + POSITION_INCREMENT;
     } else {
       // Between two tasks
       newPosition =

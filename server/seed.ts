@@ -12,6 +12,9 @@ db.prepare(
 db.prepare(
   "INSERT OR IGNORE INTO users (email, name, password_hash) VALUES (?, ?, ?)",
 ).run("bob@example.com", "Bob", hash);
+db.prepare(
+  "INSERT OR IGNORE INTO users (email, name, password_hash) VALUES (?, ?, ?)",
+).run("charlie@example.com", "Charlie", hash);
 
 const alice = db
   .prepare("SELECT id FROM users WHERE email = ?")
@@ -25,51 +28,28 @@ db.prepare("DELETE FROM tasks").run();
 
 const tasks = [
   {
-    title: "Set up CI/CD pipeline",
+    title: "Bygg ett AI-workflow för teamet",
     description:
-      "Configure GitHub Actions for automated testing and deployment to staging.",
+      "Skapa ett workflow för hur ni ska arbeta med Claude Code för att implementera uppgift 1 och uppgift 2.",
     column: "todo",
-    assignee_id: alice.id,
+    assignee_id: null,
     created_by: alice.id,
   },
   {
-    title: "Design user profile page",
+    title: "Uppgift 1: Lägg till task-prioritet (Low/Medium/High)",
     description:
-      "Create mockups for the user profile page including avatar upload and settings.",
+      "Full-stack: ny kolumn i DB, uppdatera API, prioritet-väljare i UI, färgkodade kort.",
     column: "todo",
-    assignee_id: bob.id,
+    assignee_id: null,
     created_by: alice.id,
   },
   {
-    title: "Implement search API endpoint",
+    title: "Uppgift 2: Implementera real-time updates",
     description:
-      "Add full-text search for tasks with filtering by assignee and column.",
-    column: "in_progress",
-    assignee_id: alice.id,
-    created_by: alice.id,
-  },
-  {
-    title: "Fix drag-and-drop on mobile",
-    description:
-      "Touch events are not registering correctly on iOS Safari. Investigate pointer events.",
-    column: "review",
-    assignee_id: bob.id,
+      "Boarden ska uppdateras automatiskt när andra användare gör ändringar. Öppna två flikar för att verifiera.",
+    column: "todo",
+    assignee_id: null,
     created_by: bob.id,
-  },
-  {
-    title: "Add email notifications",
-    description:
-      "Send email when a task is assigned to a user or moved to review.",
-    column: "review",
-    assignee_id: alice.id,
-    created_by: bob.id,
-  },
-  {
-    title: "Upgrade to React 19",
-    description: "Migrate to React 19 and update deprecated lifecycle methods.",
-    column: "done",
-    assignee_id: bob.id,
-    created_by: alice.id,
   },
 ];
 
@@ -88,8 +68,9 @@ tasks.forEach((task, i) => {
   );
 });
 
-console.log("Seeded 2 users and 6 tasks.");
+console.log("Seeded 3 users and 3 tasks.");
 console.log("Login: alice@example.com / password123");
 console.log("Login: bob@example.com / password123");
+console.log("Login: charlie@example.com / password123");
 
 db.close();

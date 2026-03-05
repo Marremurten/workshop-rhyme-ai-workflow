@@ -14,7 +14,7 @@ import type {
   CollisionDetection,
 } from "@dnd-kit/core";
 import type { Task, ColumnId } from "../../shared/types";
-import { COLUMNS } from "../constants";
+import { findTaskColumn } from "./findTaskColumn";
 
 interface UseBoardDragDropArgs {
   tasks: Record<number, Task>;
@@ -69,13 +69,7 @@ export function useBoardDragDrop({
     const overStr = String(over.id);
 
     setColumns((prev) => {
-      let activeCol: ColumnId | undefined;
-      for (const col of COLUMNS) {
-        if (prev[col.id].includes(activeTaskId)) {
-          activeCol = col.id;
-          break;
-        }
-      }
+      const activeCol = findTaskColumn(prev, activeTaskId);
       if (!activeCol) return prev;
 
       let targetCol: ColumnId;
@@ -83,13 +77,7 @@ export function useBoardDragDrop({
         targetCol = overStr.replace("column-", "") as ColumnId;
       } else {
         const overId = over.id as number;
-        let found: ColumnId | undefined;
-        for (const col of COLUMNS) {
-          if (prev[col.id].includes(overId)) {
-            found = col.id;
-            break;
-          }
-        }
+        const found = findTaskColumn(prev, overId);
         if (!found) return prev;
         targetCol = found;
       }
@@ -137,15 +125,10 @@ export function useBoardDragDrop({
     if (!snapshot) return;
 
     const cur = columnsRef.current;
-    let finalColumn: ColumnId | undefined;
+    const finalColumn = findTaskColumn(cur, activeTaskId);
     let finalIndex = -1;
-    for (const col of COLUMNS) {
-      const idx = cur[col.id].indexOf(activeTaskId);
-      if (idx !== -1) {
-        finalColumn = col.id;
-        finalIndex = idx;
-        break;
-      }
+    if (finalColumn) {
+      finalIndex = cur[finalColumn].indexOf(activeTaskId);
     }
 
     if (!finalColumn || finalIndex === -1) {
@@ -154,9 +137,7 @@ export function useBoardDragDrop({
       return;
     }
 
-    const origColumn = Object.keys(snapshot.columns).find((col) =>
-      snapshot.columns[col as ColumnId].includes(activeTaskId),
-    ) as ColumnId | undefined;
+    const origColumn = findTaskColumn(snapshot.columns, activeTaskId);
     if (origColumn === finalColumn) {
       const origIndex = snapshot.columns[finalColumn].indexOf(activeTaskId);
       if (origIndex === finalIndex) {

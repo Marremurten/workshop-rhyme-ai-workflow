@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
+import type { ColumnId, CreateTaskInput } from "../../shared/types";
 
 interface CreateTaskFormProps {
-  column: string;
-  onSubmit: (data: { title: string; column: string }) => void;
+  column: ColumnId;
+  onSubmit: (data: CreateTaskInput) => void;
 }
 
 export default function CreateTaskForm({

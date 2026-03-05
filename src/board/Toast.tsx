@@ -1,6 +1,8 @@
 import React, { useEffect } from "react";
 import type { ToastMessage } from "../types";
 
+const TOAST_DISMISS_MS = 3000;
+
 interface ToastProps {
   toasts: ToastMessage[];
   onDismiss: (id: string) => void;
@@ -18,7 +20,7 @@ function ToastItem({
 
     const timer = setTimeout(() => {
       onDismiss(toast.id);
-    }, 3000);
+    }, TOAST_DISMISS_MS);
 
     return () => clearTimeout(timer);
   }, [toast.id, toast.type, onDismiss]);

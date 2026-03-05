@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
-import type { Task, User } from "../../shared/types";
+import type { Task, User, CreateTaskInput, UpdateTaskInput } from "../../shared/types";
 import { COLUMNS } from "../constants";
 import useTasks from "./useTasks";
 import { useBoardDragDrop } from "./useBoardDragDrop";
@@ -47,12 +47,14 @@ export default function Board({ userName, onLogout }: BoardProps) {
     api
       .fetchUsers()
       .then((data) => {
-        setUsers((data as { users: User[] }).users);
+        setUsers(data.users);
       })
-      .catch(() => {});
+      .catch((err: unknown) => {
+        console.error("Failed to fetch users", err);
+      });
   }, []);
 
-  async function handleAddTask(data: { title: string; column: string }) {
+  async function handleAddTask(data: CreateTaskInput) {
     try {
       await addTask(data);
       showToast("Task created", "success");
@@ -61,7 +63,7 @@ export default function Board({ userName, onLogout }: BoardProps) {
     }
   }
 
-  async function handleSaveTask(id: number, data: Record<string, unknown>) {
+  async function handleSaveTask(id: number, data: UpdateTaskInput) {
     try {
       await updateTask(id, data);
       setEditingTask(null);

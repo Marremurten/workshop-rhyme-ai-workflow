@@ -1,7 +1,17 @@
-async function request(
+import type {
+  AuthResponse,
+  MessageResponse,
+  TasksResponse,
+  TaskResponse,
+  UsersResponse,
+  CreateTaskInput,
+  UpdateTaskInput,
+} from "../../shared/types";
+
+async function request<T>(
   url: string,
   options: RequestInit = {},
-): Promise<unknown> {
+): Promise<T> {
   const res = await fetch(url, { credentials: "include", ...options });
   const data = await res.json();
   if (!res.ok) {
@@ -19,35 +29,35 @@ function postOptions(body: unknown): RequestInit {
 }
 
 export async function login(email: string, password: string) {
-  return request("/api/auth/login", postOptions({ email, password }));
+  return request<AuthResponse>("/api/auth/login", postOptions({ email, password }));
 }
 
 export async function register(email: string, name: string, password: string) {
-  return request("/api/auth/register", postOptions({ email, name, password }));
+  return request<AuthResponse>("/api/auth/register", postOptions({ email, name, password }));
 }
 
 export async function fetchMe() {
-  return request("/api/auth/me");
+  return request<AuthResponse>("/api/auth/me");
 }
 
 export async function logout() {
-  return request("/api/auth/logout", { method: "POST" });
+  return request<MessageResponse>("/api/auth/logout", { method: "POST" });
 }
 
 export async function fetchUsers() {
-  return request("/api/users");
+  return request<UsersResponse>("/api/users");
 }
 
 export async function fetchTasks() {
-  return request("/api/tasks");
+  return request<TasksResponse>("/api/tasks");
 }
 
-export async function createTask(data: Record<string, unknown>) {
-  return request("/api/tasks", postOptions(data));
+export async function createTask(data: CreateTaskInput) {
+  return request<TaskResponse>("/api/tasks", postOptions(data));
 }
 
-export async function updateTask(id: number, data: Record<string, unknown>) {
-  return request(`/api/tasks/${id}`, {
+export async function updateTask(id: number, data: UpdateTaskInput) {
+  return request<TaskResponse>(`/api/tasks/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
@@ -55,11 +65,11 @@ export async function updateTask(id: number, data: Record<string, unknown>) {
 }
 
 export async function deleteTask(id: number) {
-  return request(`/api/tasks/${id}`, { method: "DELETE" });
+  return request<MessageResponse>(`/api/tasks/${id}`, { method: "DELETE" });
 }
 
 export async function moveTask(id: number, column: string, index: number) {
-  return request(`/api/tasks/${id}/move`, {
+  return request<TaskResponse>(`/api/tasks/${id}/move`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ column, index }),

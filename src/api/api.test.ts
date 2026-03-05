@@ -258,8 +258,7 @@ describe("createTask", () => {
     const taskData = {
       title: "Task",
       description: "Desc",
-      column: "in_progress",
-      assignee_id: 2,
+      column: "in_progress" as const,
     };
     const task = {
       id: 2,

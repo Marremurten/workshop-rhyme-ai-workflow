@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Task, ColumnId } from "../../shared/types";
+import type { Task, ColumnId, UpdateTaskInput } from "../../shared/types";
 import { COLUMNS } from "../constants";
 import Modal from "../ui/Modal";
 import FormField, { inputClassName } from "../ui/FormField";
@@ -8,7 +8,7 @@ import Button from "../ui/Button";
 interface EditTaskModalProps {
   task: Task;
   users: Array<{ id: number; email: string; name: string }>;
-  onSave: (id: number, data: Record<string, unknown>) => void;
+  onSave: (id: number, data: UpdateTaskInput) => void;
   onDelete: (id: number) => void;
   onClose: () => void;
 }

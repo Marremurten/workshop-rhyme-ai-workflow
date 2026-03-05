@@ -6,7 +6,7 @@ export function useToast() {
 
   const showToast = useCallback(
     (message: string, type: "success" | "error") => {
-      const id = Date.now().toString();
+      const id = crypto.randomUUID();
       setToasts((prev) => [...prev, { id, message, type }]);
     },
     [],
