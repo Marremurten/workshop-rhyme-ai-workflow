@@ -1,9 +1,9 @@
 import { useState } from "react";
-import type { Task, ColumnId } from "../types";
+import type { Task, ColumnId } from "../../shared/types";
 import { COLUMNS } from "../constants";
-import Modal from "./ui/Modal";
-import FormField, { inputClassName } from "./ui/FormField";
-import Button from "./ui/Button";
+import Modal from "../ui/Modal";
+import FormField, { inputClassName } from "../ui/FormField";
+import Button from "../ui/Button";
 
 interface EditTaskModalProps {
   task: Task;

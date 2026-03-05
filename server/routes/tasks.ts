@@ -3,25 +3,14 @@ import type { Response } from "express";
 import type Database from "better-sqlite3";
 import { requireAuth } from "../middleware/auth";
 import type { AuthenticatedRequest } from "../types";
-
-interface TaskRow {
-  id: number;
-  title: string;
-  description: string | null;
-  column: string;
-  position: number;
-  assignee_id: number | null;
-  created_by: number;
-  created_at: string;
-  updated_at: string;
-}
+import type { Task } from "../../shared/types";
 
 function getTaskById(
   db: Database.Database,
   id: string | number | bigint,
-): TaskRow | undefined {
+): Task | undefined {
   return db.prepare("SELECT * FROM tasks WHERE id = ?").get(id) as
-    | TaskRow
+    | Task
     | undefined;
 }
 
@@ -35,7 +24,7 @@ export function createTasksRouter(db: Database.Database): Router {
   router.get("/", (_req: Request, res: Response) => {
     const tasks = db
       .prepare('SELECT * FROM tasks ORDER BY "column", position ASC')
-      .all() as TaskRow[];
+      .all() as Task[];
     res.json({ tasks });
   });
 
@@ -143,7 +132,7 @@ export function createTasksRouter(db: Database.Database): Router {
       .prepare(
         'SELECT * FROM tasks WHERE "column" = ? AND id != ? ORDER BY position ASC',
       )
-      .all(targetColumn, id) as TaskRow[];
+      .all(targetColumn, id) as Task[];
 
     let newPosition: number;
 

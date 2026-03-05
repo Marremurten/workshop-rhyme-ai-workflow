@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import * as api from "../api/client";
-import type { Task, ColumnId } from "../types";
+import type { Task, ColumnId } from "../../shared/types";
 import { COLUMN_IDS } from "../constants";
 
 export function useTasks() {

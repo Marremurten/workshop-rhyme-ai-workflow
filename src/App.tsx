@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { AuthProvider, useAuth } from "./hooks/useAuth";
-import LoginForm from "./components/LoginForm";
-import RegisterForm from "./components/RegisterForm";
-import Board from "./components/Board";
+import { AuthProvider, useAuth } from "./auth/useAuth";
+import LoginForm from "./auth/LoginForm";
+import RegisterForm from "./auth/RegisterForm";
+import Board from "./board/Board";
 
 function AuthGate() {
   const { user, loading, login, logout, register } = useAuth();

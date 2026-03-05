@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, act, waitFor } from "@testing-library/react";
-import { AuthProvider, useAuth } from "../hooks/useAuth";
+import { AuthProvider, useAuth } from "./useAuth";
 import * as api from "../api/client";
 
 vi.mock("../api/client", () => ({

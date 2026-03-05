@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
-import FormField, { inputClassName } from "./ui/FormField";
-import Button from "./ui/Button";
+import FormField, { inputClassName } from "../ui/FormField";
+import Button from "../ui/Button";
 
 interface RegisterFormProps {
   onRegister: (email: string, name: string, password: string) => Promise<void>;

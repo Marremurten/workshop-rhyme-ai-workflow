@@ -67,33 +67,37 @@ This starts both the Vite dev server (http://localhost:5173) and the Express API
 | `npm run lint:fix`   | Auto-fix lint issues                     |
 | `npm run format`     | Format code with Prettier                |
 | `npm run format:check` | Check formatting                       |
+| `npm run seed`         | Seed database with sample users & tasks |
 
 ## Project Structure
 
 ```
+shared/                     # Shared types (frontend + backend)
+  types.ts                  # Task, User, ColumnId
+
 src/                        # Frontend (React)
-  components/
-    Board.tsx               # Main kanban board
+  auth/                     # Authentication feature
+    LoginForm.tsx
+    RegisterForm.tsx
+    useAuth.tsx             # Auth context & provider
+  board/                    # Kanban board feature
+    Board.tsx               # Main board container
+    BoardHeader.tsx         # Header with user info
     Column.tsx              # Board column
     TaskCard.tsx            # Draggable task card
     CreateTaskForm.tsx      # Inline task creation
     EditTaskModal.tsx       # Task editing modal
-    LoginForm.tsx           # Login form
-    RegisterForm.tsx        # Registration form
-    BoardHeader.tsx         # Header with user info
     Toast.tsx               # Toast notifications
-    ui/                     # Reusable UI primitives
-      Button.tsx
-      FormField.tsx
-      Modal.tsx
-  hooks/
-    useAuth.tsx             # Auth context & provider
     useTasks.ts             # Task state & CRUD
     useBoardDragDrop.ts     # Drag-drop logic
     useToast.ts             # Toast notification state
+  ui/                       # Reusable UI primitives
+    Button.tsx
+    FormField.tsx
+    Modal.tsx
   api/
     client.ts               # API client (fetch wrapper)
-  types.ts                  # Shared TypeScript types
+  types.ts                  # Frontend-only types (re-exports shared)
   constants.ts              # Column definitions
 
 server/                     # Backend (Express)
@@ -108,8 +112,11 @@ server/                     # Backend (Express)
     index.ts                # SQLite setup & schema
   app.ts                    # Express app setup
   config.ts                 # JWT configuration
+  seed.ts                   # Database seeder
   index.ts                  # Server entry point
 ```
+
+Tests are co-located next to the files they test (e.g., `Board.test.tsx` alongside `Board.tsx`).
 
 ## API Endpoints
 

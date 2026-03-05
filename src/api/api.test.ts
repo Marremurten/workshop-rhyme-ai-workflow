@@ -10,7 +10,7 @@ import {
   updateTask,
   deleteTask,
   moveTask,
-} from "../api/client";
+} from "./client";
 
 // Mock global fetch
 const mockFetch = vi.fn();

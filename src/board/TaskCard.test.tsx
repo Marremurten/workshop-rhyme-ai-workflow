@@ -20,7 +20,7 @@ vi.mock("@dnd-kit/sortable", () => ({
   useSortable: (...args: unknown[]) => useSortableMock(...args),
 }));
 
-import TaskCard from "../components/TaskCard";
+import TaskCard from "./TaskCard";
 
 // ---------------------------------------------------------------------------
 // Types for test data

@@ -8,7 +8,7 @@ import { render, screen } from "@testing-library/react";
 
 // Mock the useTasks hook
 const mockUseTasks = vi.fn();
-vi.mock("../hooks/useTasks", () => ({
+vi.mock("./useTasks", () => ({
   default: (...args: unknown[]) => mockUseTasks(...args),
   useTasks: (...args: unknown[]) => mockUseTasks(...args),
 }));
@@ -62,7 +62,7 @@ vi.mock("@dnd-kit/sortable", () => ({
   }),
 }));
 
-import Board from "../components/Board";
+import Board from "./Board";
 
 // ---------------------------------------------------------------------------
 // Types for test data

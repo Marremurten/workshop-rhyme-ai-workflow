@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import request from "supertest";
 import type { Express } from "express";
 import type Database from "better-sqlite3";
-import { createTestApp, registerAndGetCookie } from "./helpers";
+import { createTestApp, registerAndGetCookie } from "../test-helpers";
 
 describe("Tasks API", () => {
   let app: Express;

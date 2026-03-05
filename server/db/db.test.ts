@@ -1,5 +1,5 @@
 import { describe, it, expect, afterEach } from "vitest";
-import { getDb } from "../db/index";
+import { getDb } from "./index";
 import type Database from "better-sqlite3";
 
 describe("database module", () => {

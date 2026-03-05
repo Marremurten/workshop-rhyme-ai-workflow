@@ -40,7 +40,7 @@ vi.mock("@dnd-kit/sortable", () => ({
   }),
 }));
 
-import Column from "../components/Column";
+import Column from "./Column";
 import { useDroppable } from "@dnd-kit/core";
 
 // ---------------------------------------------------------------------------

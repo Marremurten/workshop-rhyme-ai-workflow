@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { DndContext, DragOverlay } from "@dnd-kit/core";
-import type { Task, User } from "../types";
+import type { Task, User } from "../../shared/types";
 import { COLUMNS } from "../constants";
-import useTasks from "../hooks/useTasks";
-import { useBoardDragDrop } from "../hooks/useBoardDragDrop";
-import { useToast } from "../hooks/useToast";
+import useTasks from "./useTasks";
+import { useBoardDragDrop } from "./useBoardDragDrop";
+import { useToast } from "./useToast";
 import * as api from "../api/client";
 import Column from "./Column";
 import BoardHeader from "./BoardHeader";

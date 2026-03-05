@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, act } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import Toast from "../components/Toast";
+import Toast from "./Toast";
 
 // ---------------------------------------------------------------------------
 // Types for test data

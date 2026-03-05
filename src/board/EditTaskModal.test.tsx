@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import EditTaskModal from "../components/EditTaskModal";
+import EditTaskModal from "./EditTaskModal";
 
 // ---------------------------------------------------------------------------
 // Types for test data

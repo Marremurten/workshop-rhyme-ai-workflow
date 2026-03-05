@@ -1,5 +1,5 @@
-import { getDb } from "../db/index";
-import { createApp } from "../app";
+import { getDb } from "./db/index";
+import { createApp } from "./app";
 import type { Express } from "express";
 import type Database from "better-sqlite3";
 import request from "supertest";

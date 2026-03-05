@@ -3,8 +3,8 @@ import request from "supertest";
 import jwt from "jsonwebtoken";
 import type { Express } from "express";
 import type Database from "better-sqlite3";
-import { createTestApp } from "./helpers";
-import { requireAuth } from "../middleware/auth";
+import { createTestApp } from "./test-helpers";
+import { requireAuth } from "./middleware/auth";
 
 const JWT_SECRET = process.env.JWT_SECRET || "dev-secret";
 

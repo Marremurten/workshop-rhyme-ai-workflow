@@ -3,7 +3,7 @@ import {
   SortableContext,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import type { Task } from "../types";
+import type { Task } from "../../shared/types";
 import TaskCard from "./TaskCard";
 import CreateTaskForm from "./CreateTaskForm";
 

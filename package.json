@@ -8,6 +8,7 @@
     "build": "vite build",
     "test": "vitest",
     "server": "tsx server/index.ts",
+    "seed": "tsx server/seed.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",

@@ -13,7 +13,7 @@ import type {
   DragEndEvent,
   CollisionDetection,
 } from "@dnd-kit/core";
-import type { Task, ColumnId } from "../types";
+import type { Task, ColumnId } from "../../shared/types";
 import { COLUMNS } from "../constants";
 
 interface UseBoardDragDropArgs {

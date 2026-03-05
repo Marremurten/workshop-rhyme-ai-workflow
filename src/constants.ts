@@ -1,4 +1,4 @@
-import type { ColumnId } from "./types";
+import type { ColumnId } from "../shared/types";
 
 export const COLUMNS: { id: ColumnId; title: string }[] = [
   { id: "todo", title: "To Do" },
