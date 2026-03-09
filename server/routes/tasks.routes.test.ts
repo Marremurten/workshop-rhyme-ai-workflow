@@ -138,6 +138,26 @@ describe("Tasks API", () => {
       // The registered user should be user id 1 (first user in the db)
       expect(res.body.task.created_by).toBe(1);
     });
+
+    it('defaults priority to "medium"', async () => {
+      const res = await request(app)
+        .post("/api/tasks")
+        .set("Cookie", cookie)
+        .send({ title: "No priority specified" });
+
+      expect(res.status).toBe(201);
+      expect(res.body.task.priority).toBe("medium");
+    });
+
+    it("accepts priority field", async () => {
+      const res = await request(app)
+        .post("/api/tasks")
+        .set("Cookie", cookie)
+        .send({ title: "High priority task", priority: "high" });
+
+      expect(res.status).toBe(201);
+      expect(res.body.task.priority).toBe("high");
+    });
   });
 
   // ---- PUT /api/tasks/:id ----
@@ -206,6 +226,16 @@ describe("Tasks API", () => {
 
       expect(res.status).toBe(200);
       expect(res.body.task.assignee_id).toBeNull();
+    });
+
+    it("updates priority", async () => {
+      const res = await request(app)
+        .put(`/api/tasks/${taskId}`)
+        .set("Cookie", cookie)
+        .send({ priority: "high" });
+
+      expect(res.status).toBe(200);
+      expect(res.body.task.priority).toBe("high");
     });
 
     it("returns 404 for nonexistent id", async () => {

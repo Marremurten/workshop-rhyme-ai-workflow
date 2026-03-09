@@ -32,7 +32,7 @@ export function createTasksRouter(db: Database.Database): Router {
 
   // POST /api/tasks
   router.post("/", (req: Request, res: Response) => {
-    const { title, description, column: col } = req.body;
+    const { title, description, column: col, priority } = req.body;
 
     if (!title) {
       res.status(400).json({ error: "Title is required" });
@@ -40,6 +40,7 @@ export function createTasksRouter(db: Database.Database): Router {
     }
 
     const targetColumn = col || "todo";
+    const targetPriority = priority || "medium";
     const userId = (req as AuthenticatedRequest).userId;
 
     // Calculate position: max position in column + 1000, or 1000 if empty
@@ -51,9 +52,9 @@ export function createTasksRouter(db: Database.Database): Router {
 
     const result = db
       .prepare(
-        'INSERT INTO tasks (title, description, "column", position, created_by) VALUES (?, ?, ?, ?, ?)',
+        'INSERT INTO tasks (title, description, "column", priority, position, created_by) VALUES (?, ?, ?, ?, ?, ?)',
       )
-      .run(title, description ?? null, targetColumn, position, userId);
+      .run(title, description ?? null, targetColumn, targetPriority, position, userId);
 
     const task = getTaskById(db, result.lastInsertRowid);
     res.status(201).json({ task });
@@ -69,7 +70,7 @@ export function createTasksRouter(db: Database.Database): Router {
       return;
     }
 
-    const { title, description, assignee_id, column: col } = req.body;
+    const { title, description, assignee_id, column: col, priority } = req.body;
 
     const fields: string[] = [];
     const values: (string | number | null)[] = [];
@@ -89,6 +90,10 @@ export function createTasksRouter(db: Database.Database): Router {
     if (col !== undefined) {
       fields.push('"column" = ?');
       values.push(col);
+    }
+    if (priority !== undefined) {
+      fields.push("priority = ?");
+      values.push(priority);
     }
 
     fields.push("updated_at = ?");

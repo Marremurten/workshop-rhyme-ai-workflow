@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Task, ColumnId, UpdateTaskInput } from "../../shared/types";
+import type { Task, ColumnId, Priority, UpdateTaskInput } from "../../shared/types";
 import { COLUMNS } from "../constants";
 import Modal from "../ui/Modal";
 import FormField, { inputClassName } from "../ui/FormField";
@@ -26,6 +26,7 @@ export default function EditTaskModal({
     task.assignee_id != null ? String(task.assignee_id) : "",
   );
   const [column, setColumn] = useState(task.column);
+  const [priority, setPriority] = useState<Priority>(task.priority);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
 
   function handleSave() {
@@ -34,6 +35,7 @@ export default function EditTaskModal({
       description,
       assignee_id: assigneeId ? Number(assigneeId) : null,
       column,
+      priority,
     });
   }
 
@@ -99,6 +101,20 @@ export default function EditTaskModal({
                 {col.title}
               </option>
             ))}
+          </select>
+        </FormField>
+
+        <FormField label="Priority" htmlFor="edit-priority">
+          <select
+            id="edit-priority"
+            aria-label="Priority"
+            value={priority}
+            onChange={(e) => setPriority(e.target.value as Priority)}
+            className={inputClassName}
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
           </select>
         </FormField>
       </div>

@@ -29,6 +29,8 @@ export function getDb(dbPath: string = "data/kanban.db"): Database.Database {
       description   TEXT,
       "column"      TEXT    NOT NULL DEFAULT 'todo'
                             CHECK("column" IN ('todo', 'in_progress', 'review', 'done')),
+      priority      TEXT    NOT NULL DEFAULT 'medium'
+                            CHECK(priority IN ('low', 'medium', 'high')),
       position      REAL    NOT NULL,
       assignee_id   INTEGER REFERENCES users(id) ON DELETE SET NULL,
       created_by    INTEGER NOT NULL REFERENCES users(id),

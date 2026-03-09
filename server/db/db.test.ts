@@ -92,7 +92,7 @@ describe("database module", () => {
         columns.map((col) => [col.name, col]),
       );
 
-      expect(columns).toHaveLength(9);
+      expect(columns).toHaveLength(10);
 
       // id: integer primary key
       expect(columnMap.id).toBeDefined();

@@ -1,10 +1,12 @@
 export type ColumnId = "todo" | "in_progress" | "review" | "done";
+export type Priority = "low" | "medium" | "high";
 
 export interface Task {
   id: number;
   title: string;
   description: string | null;
   column: ColumnId;
+  priority: Priority;
   position: number;
   assignee_id: number | null;
   created_by: number;
@@ -22,6 +24,7 @@ export interface CreateTaskInput {
   title: string;
   description?: string;
   column?: ColumnId;
+  priority?: Priority;
 }
 
 export interface UpdateTaskInput {
@@ -29,6 +32,7 @@ export interface UpdateTaskInput {
   description?: string | null;
   assignee_id?: number | null;
   column?: ColumnId;
+  priority?: Priority;
 }
 
 export interface TasksResponse {

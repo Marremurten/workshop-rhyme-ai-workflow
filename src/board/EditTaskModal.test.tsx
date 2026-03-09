@@ -13,6 +13,7 @@ interface Task {
   title: string;
   description: string | null;
   column: "todo" | "in_progress" | "done";
+  priority: "low" | "medium" | "high";
   position: number;
   assignee_id: number | null;
   created_by: number;
@@ -29,6 +30,7 @@ function makeTask(
   return {
     description: null,
     column: "todo",
+    priority: "medium",
     position: 1000,
     assignee_id: null,
     created_by: 1,
@@ -183,6 +185,30 @@ describe("EditTaskModal", () => {
 
     expect(onClose).toHaveBeenCalledTimes(1);
     expect(onSave).not.toHaveBeenCalled();
+  });
+
+  it("renders priority select with three options", () => {
+    renderModal();
+    const prioritySelect = screen.getByRole("combobox", { name: /priority/i });
+    expect(prioritySelect).toBeInTheDocument();
+    const options = Array.from((prioritySelect as HTMLSelectElement).options);
+    expect(options.map((o) => o.value)).toEqual(["low", "medium", "high"]);
+  });
+
+  it("includes priority in onSave payload", async () => {
+    const user = userEvent.setup();
+    const { onSave } = renderModal({ id: 20, priority: "medium" });
+
+    const prioritySelect = screen.getByRole("combobox", { name: /priority/i });
+    await user.selectOptions(prioritySelect, "high");
+
+    const saveButton = screen.getByRole("button", { name: /save/i });
+    await user.click(saveButton);
+
+    expect(onSave).toHaveBeenCalledWith(
+      20,
+      expect.objectContaining({ priority: "high" }),
+    );
   });
 
   it("can edit title and description", async () => {

@@ -30,6 +30,7 @@ interface Task {
   title: string;
   description: string | null;
   column: "todo" | "in_progress" | "done";
+  priority: "low" | "medium" | "high";
   position: number;
   assignee_id: number | null;
   created_by: number;
@@ -46,6 +47,7 @@ function makeTask(
   return {
     description: null,
     column: "todo",
+    priority: "medium",
     position: 1000,
     assignee_id: null,
     created_by: 1,
@@ -143,6 +145,33 @@ describe("TaskCard", () => {
     await user.click(screen.getByText("Clickable task"));
 
     expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders high priority badge with correct text and classes", () => {
+    const task = makeTask({ id: 10, title: "Urgent task", priority: "high" });
+    const { container } = render(<TaskCard task={task} onClick={vi.fn()} />);
+    const badge = screen.getByText("High");
+    expect(badge).toBeInTheDocument();
+    expect(badge.className).toContain("bg-red-900/50");
+    expect(badge.className).toContain("text-red-300");
+  });
+
+  it("renders medium priority badge with correct text and classes", () => {
+    const task = makeTask({ id: 11, title: "Normal task", priority: "medium" });
+    render(<TaskCard task={task} onClick={vi.fn()} />);
+    const badge = screen.getByText("Medium");
+    expect(badge).toBeInTheDocument();
+    expect(badge.className).toContain("bg-yellow-900/50");
+    expect(badge.className).toContain("text-yellow-300");
+  });
+
+  it("renders low priority badge with correct text and classes", () => {
+    const task = makeTask({ id: 12, title: "Low task", priority: "low" });
+    render(<TaskCard task={task} onClick={vi.fn()} />);
+    const badge = screen.getByText("Low");
+    expect(badge).toBeInTheDocument();
+    expect(badge.className).toContain("bg-green-900/50");
+    expect(badge.className).toContain("text-green-300");
   });
 
   it("uses useSortable from @dnd-kit/sortable", () => {

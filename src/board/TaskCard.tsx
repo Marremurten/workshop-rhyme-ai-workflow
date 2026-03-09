@@ -3,6 +3,12 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import type { Task } from "../../shared/types";
 
+const PRIORITY_CONFIG: Record<string, { label: string; colorClass: string }> = {
+  high: { label: "High", colorClass: "bg-red-900/50 text-red-300" },
+  medium: { label: "Medium", colorClass: "bg-yellow-900/50 text-yellow-300" },
+  low: { label: "Low", colorClass: "bg-green-900/50 text-green-300" },
+};
+
 interface TaskCardProps {
   task: Task;
   onClick: () => void;
@@ -46,6 +52,13 @@ const TaskCard = React.memo(function TaskCard({
         isDragging ? "opacity-30" : ""
       } ${isOverlay ? "rotate-2 shadow-xl shadow-black/30" : ""}`}
     >
+      {PRIORITY_CONFIG[task.priority] && (
+        <span
+          className={`mb-2 inline-block rounded-full px-2 py-0.5 text-xs ${PRIORITY_CONFIG[task.priority].colorClass}`}
+        >
+          {PRIORITY_CONFIG[task.priority].label}
+        </span>
+      )}
       <p className="font-medium text-white">{task.title}</p>
       {task.description != null && (
         <p className="mt-1 line-clamp-1 text-sm text-gray-500">

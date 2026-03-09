@@ -28,33 +28,36 @@ db.prepare("DELETE FROM tasks").run();
 
 const tasks = [
   {
-    title: "Bygg ett AI-workflow för teamet",
+    title: "Build an AI workflow for the team",
     description:
-      "Skapa ett workflow för hur ni ska arbeta med Claude Code för att implementera uppgift 1 och uppgift 2.",
+      "Create a workflow for how to work with Claude Code to implement task 1 and task 2.",
     column: "todo",
+    priority: "high",
     assignee_id: null,
     created_by: alice.id,
   },
   {
-    title: "Uppgift 1: Lägg till task-prioritet (Low/Medium/High)",
+    title: "Task 1: Add task priority (Low/Medium/High)",
     description:
-      "Full-stack: ny kolumn i DB, uppdatera API, prioritet-väljare i UI, färgkodade kort.",
+      "Full-stack: new column in DB, update API, priority picker in UI, color-coded cards.",
     column: "todo",
+    priority: "medium",
     assignee_id: null,
     created_by: alice.id,
   },
   {
-    title: "Uppgift 2: Implementera real-time updates",
+    title: "Task 2: Implement real-time updates",
     description:
-      "Boarden ska uppdateras automatiskt när andra användare gör ändringar. Öppna två flikar för att verifiera.",
+      "The board should update automatically when other users make changes. Open two tabs to verify.",
     column: "todo",
+    priority: "low",
     assignee_id: null,
     created_by: bob.id,
   },
 ];
 
 const insert = db.prepare(
-  'INSERT INTO tasks (title, description, "column", position, assignee_id, created_by) VALUES (?, ?, ?, ?, ?, ?)',
+  'INSERT INTO tasks (title, description, "column", priority, position, assignee_id, created_by) VALUES (?, ?, ?, ?, ?, ?, ?)',
 );
 
 tasks.forEach((task, i) => {
@@ -62,6 +65,7 @@ tasks.forEach((task, i) => {
     task.title,
     task.description,
     task.column,
+    task.priority,
     (i + 1) * 1000,
     task.assignee_id,
     task.created_by,
